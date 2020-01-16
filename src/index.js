@@ -1,32 +1,33 @@
 const express = require("express"),
-  cron = require("node-cron");
+  cron = require('cron');
+  // cron = require("node-cron");
 
 const app = express();
 
 let date = "Wed Jan 15 2020 13:53:54 GMT+0530 (India Standard Time)";
 
-let endDate = "Wed Jan 15 2021 14:06:00 GMT+0530 (India Standard Time)";
+let endDate = "Thu Jan 16 2020 20:15:00 GMT+0530 (India Standard Time)";
 
-// run a task every 5 seconds till the end date specified.
-let task = cron.schedule(
-  "*/5 * * * * *",
-  () => {
-    console.log("hello", new Date());
-    if (Date.parse(new Date()) > Date.parse(endDate)) {
-      console.log("stopping", new Date());
-      task.stop();
-    }
-  },
-  {
-    scheduled: false
-  }
-);
+function cronJ(i) {
+  new cron.CronJob(
+    `*/${i} * * * * *`, 
+    function () {
+      if(Date.parse(endDate) < Date.parse(Date())) {
+        console.log('stopping');
+        this.stop();
+        return;
+      }
 
-// start the task if the current date is within the start_date and end_date
-if (
-  Date.parse(new Date()) > Date.parse(date) &&
-  Date.parse(new Date()) < Date.parse(endDate)
-)
-  task.start();
+      if(Date.parse(Date()) > Date.parse(date))
+        console.log('hello', Date(), i)
+    },
+    () => {},
+    true,
+    'Asia/Kolkata'
+  )
+}
+
+cronJ(1)
+cronJ(2)
 
 app.listen(8080);
